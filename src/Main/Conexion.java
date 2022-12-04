@@ -18,32 +18,26 @@ import java.util.logging.Logger;
  */
 public class Conexion {
 
-    public Conexion() {
-        Properties datos = new Properties();
-        String servidor;
-        String driver;
-        datos.put("user", "u7tuhhfbmthsu53c");
-        datos.put("password", "Nw5nMTEHvX2U2r3gVAYj");
-        servidor = "jdbc:mysql://bosgnclh26bmxuw456hf-mysql.services.clever-cloud.com:3306/bosgnclh26bmxuw456hf";
-//        String pd_nombre,pd_descripcion;
-//        double pd_compra,pd_venta;
-//        String pd_fecha;
-//        String cadenasql;
-        driver = "com.mysql.jdbc.Driver";
+    String Cadena = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+    String Driver = "com.mysql.jdbc.Driver";
+    String Usuario = "root";
+    String Contraseña = "";
+    
+    public void Conexion() throws SQLException
+    {
         try {
-            Class.forName(driver);
-            Connection con = DriverManager.getConnection(servidor, datos);
-            if (con != null) {
-                System.out.println("Conecto");
+            Class.forName(Driver);//Utilizar un driver de tercero (el driver)
+            java.sql.Connection con = DriverManager.getConnection(Cadena, Usuario, Contraseña);
+            if(con!= null)
+            {
+                System.out.println("conecto");
                 con.close();
-            } else {
-                System.out.println("No conecto");
+            }
+            else
+            {
+                System.out.println("Error");
             }
         } catch (ClassNotFoundException ex) {
-
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
