@@ -61,9 +61,9 @@ public final class AltaCliente extends javax.swing.JInternalFrame {
        Properties datos = new Properties();
         String servidor;
         String driver;
-        datos.put("user", "u7tuhhfbmthsu53c");
-        datos.put("password", "Nw5nMTEHvX2U2r3gVAYj");
-        servidor = "jdbc:mysql://bosgnclh26bmxuw456hf-mysql.services.clever-cloud.com:3306/bosgnclh26bmxuw456hf";
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
         driver = "com.mysql.jdbc.Driver";
         String cl_nombre,cl_direccion,cl_RFC,cl_email;
         short cl_sexo,cl_edoCivil, cl_enviarCorreo;
@@ -266,9 +266,9 @@ public final class AltaCliente extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNombreClienteAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clienteEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(clienteEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreClienteAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(56, 56, 56)
                 .addComponent(jLabel20)
                 .addGap(18, 18, 18)
@@ -357,8 +357,7 @@ public final class AltaCliente extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
