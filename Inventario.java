@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package proyecto;
+package Main;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,50 +24,44 @@ public class Inventario extends javax.swing.JFrame {
     public Inventario() throws ClassNotFoundException, SQLException {
         initComponents();
         String Cadena = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
-    String Driver = "com.mysql.jdbc.Driver";
-    String Usuario = "root";
-    String Contraseña = "";
-    
-    
+        String Driver = "com.mysql.jdbc.Driver";
+        String Usuario = "root";
+        String Contraseña = "";
+
         int IdProducto;
         String Nombre;
         int Categoria, Existencia;
         String cadenasql;
-        
-        cadenasql= "Select * from inventario";
-        
+
+        cadenasql = "Select * from inventario";
+
         System.out.println(cadenasql);
         ResultSet datos_productos;
-        DefaultTableModel modelo_tabla=(DefaultTableModel)this.jTable1.getModel();
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.jTable1.getModel();
         try {
             Class.forName(Driver);//Utilizar un driver de tercero (el driver)
             java.sql.Connection con = DriverManager.getConnection(Cadena, Usuario, Contraseña);
-            if(con!= null)
-                    {
-                        System.out.println("conecto");
-                        Statement exe = con.createStatement();
-                        datos_productos=exe.executeQuery(cadenasql);
-                        while(datos_productos.next())
-                        {
-                            IdProducto=datos_productos.getInt("IdProducto");
-                            Nombre=datos_productos.getString("Nombre");
-                            Categoria=datos_productos.getInt("Categoria");
-                            Existencia=datos_productos.getInt("Existencia")
-                                    ;
-                            Object vector[]={IdProducto,Nombre,Categoria,Existencia};
-                            modelo_tabla.addRow(vector);
-                        }
-                        con.close();
-                    }
-                    else
-                    {
-                        System.out.println("Error");
-                    }
-        } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-            }   catch (SQLException ex) {
-                    Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+            if (con != null) {
+                System.out.println("conecto");
+                Statement exe = con.createStatement();
+                datos_productos = exe.executeQuery(cadenasql);
+                while (datos_productos.next()) {
+                    IdProducto = datos_productos.getInt("IdProducto");
+                    Nombre = datos_productos.getString("Nombre");
+                    Categoria = datos_productos.getInt("Categoria");
+                    Existencia = datos_productos.getInt("Existencia");
+                    Object vector[] = {IdProducto, Nombre, Categoria, Existencia};
+                    modelo_tabla.addRow(vector);
                 }
+                con.close();
+            } else {
+                System.out.println("Error");
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Inventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -81,6 +75,8 @@ public class Inventario extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("INVENTARIO");
@@ -108,18 +104,44 @@ public class Inventario extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("Bienvenido a inventario");
+        jLabel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setOpaque(true);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/notificacion si.png"))); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
-                .addGap(25, 25, 25))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54))
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(155, 155, 155)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
@@ -127,21 +149,14 @@ public class Inventario extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-//        int renglon;
-//        DefaultTableModel modelo_tabla=(DefaultTableModel)this.jTable1.getModel();
-//        renglon = jTable1.getSelectedRow();
-//        this.Claves.setText("Clave: "+ modelo_tabla.getValueAt(renglon, 0));
-//        String temp=(String)modelo_tabla.getValueAt(renglon, 1);
-//        this.Txt_Nombre.setText(temp);
-//        temp=(String)modelo_tabla.getValueAt(renglon, 2);
-//        this.Txt_Descripcion.setText(temp);
-//        temp=modelo_tabla.getValueAt(renglon, 3).toString();
-//        this.Txt_Precio_cmp.setText(temp);
-//        temp=modelo_tabla.getValueAt(renglon, 4).toString();
-//        this.Txt_Precio_vnt.setText(temp);
-//        temp=(String)modelo_tabla.getValueAt(renglon, 5);
-//        this.Txt_Fecha.setText(temp);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        PantallaPrincipal pan = new PantallaPrincipal();
+        pan.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -185,6 +200,8 @@ public class Inventario extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
