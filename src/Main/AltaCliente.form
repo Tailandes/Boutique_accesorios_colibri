@@ -96,7 +96,7 @@
               <Table columnCount="5" rowCount="0">
                 <Column editable="false" title="Id de compra" type="java.lang.Object"/>
                 <Column editable="true" title="Nombre cliente" type="java.lang.Object"/>
-                <Column editable="true" title="Total de compra" type="java.lang.Object"/>
+                <Column editable="true" title="Deuda total" type="java.lang.Object"/>
                 <Column editable="true" title="Cantidad pagada" type="java.lang.Object"/>
                 <Column editable="true" title="Cantidad restante" type="java.lang.Object"/>
               </Table>

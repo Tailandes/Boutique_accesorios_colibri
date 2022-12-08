@@ -4,19 +4,47 @@
  */
 package Main;
 
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import java.lang.System;
+import java.time.LocalDate;
+import javax.swing.JTable;
+
 /**
  *
  * @author Alexg
  */
 public class Ventas extends javax.swing.JFrame {
 
+    Object venta1[][];
+    int ids[];
+    boolean bandera = false;
+    
+
+  
     /**
      * Creates new form Ventas
      */
     public Ventas() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
-    }
+        labelDatos.setVisible(false);
+        searchTable.setCellSelectionEnabled(true);
+        searchTable.setVisible(true);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,9 +58,8 @@ public class Ventas extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         jLabel2 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableContent = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
@@ -40,8 +67,15 @@ public class Ventas extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
+        labelCuenta = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        searchTable = new javax.swing.JTable();
+        textSearch = new javax.swing.JTextField();
+        labelDatos = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
+        jLabel26 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,25 +89,19 @@ public class Ventas extends javax.swing.JFrame {
 
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/busqueda (1).png"))); // NOI18N
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableContent.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cantidad", "Nombre Producto", "Precio unitario", "Precio total"
+                "Id", "Cantidad", "Nombre Producto", "Precio unitario", "Precio total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -84,27 +112,45 @@ public class Ventas extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
-        jTable1.setShowGrid(false);
-        jTable1.setShowVerticalLines(true);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(80);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(450);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(150);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tableContent.setShowGrid(false);
+        tableContent.setShowVerticalLines(true);
+        tableContent.getTableHeader().setResizingAllowed(false);
+        tableContent.getTableHeader().setReorderingAllowed(false);
+        tableContent.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableContentMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableContent);
+        if (tableContent.getColumnModel().getColumnCount() > 0) {
+            tableContent.getColumnModel().getColumn(0).setResizable(false);
+            tableContent.getColumnModel().getColumn(0).setPreferredWidth(15);
+            tableContent.getColumnModel().getColumn(1).setResizable(false);
+            tableContent.getColumnModel().getColumn(1).setPreferredWidth(20);
+            tableContent.getColumnModel().getColumn(2).setResizable(false);
+            tableContent.getColumnModel().getColumn(2).setPreferredWidth(300);
+            tableContent.getColumnModel().getColumn(3).setResizable(false);
+            tableContent.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tableContent.getColumnModel().getColumn(4).setResizable(false);
+            tableContent.getColumnModel().getColumn(4).setPreferredWidth(100);
         }
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/eliminar.png"))); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel1.setText("Eliminar producto");
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Agregar.png"))); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel22.setText("Procesar compra");
@@ -122,14 +168,100 @@ public class Ventas extends javax.swing.JFrame {
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel24.setText("Total:");
 
-        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel25.setText("0.0");
+        labelCuenta.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        labelCuenta.setText("0.0");
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cerrar-sesion (1).png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        searchTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Nombre", "Precio", "Existencia"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        searchTable.setShowGrid(false);
+        searchTable.getTableHeader().setResizingAllowed(false);
+        searchTable.getTableHeader().setReorderingAllowed(false);
+        searchTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchTableMouseClicked(evt);
+            }
+        });
+        searchTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchTableKeyPressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(searchTable);
+        if (searchTable.getColumnModel().getColumnCount() > 0) {
+            searchTable.getColumnModel().getColumn(0).setResizable(false);
+            searchTable.getColumnModel().getColumn(0).setPreferredWidth(15);
+            searchTable.getColumnModel().getColumn(1).setResizable(false);
+            searchTable.getColumnModel().getColumn(2).setResizable(false);
+            searchTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+            searchTable.getColumnModel().getColumn(3).setResizable(false);
+            searchTable.getColumnModel().getColumn(3).setPreferredWidth(50);
+        }
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+        );
+
+        textSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textSearchKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textSearchKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textSearchKeyTyped(evt);
+            }
+        });
+
+        labelDatos.setEnabled(false);
+
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/compras.png"))); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jLabel26.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel26.setText("Agregar");
 
         jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel21, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jTextField3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -138,8 +270,13 @@ public class Ventas extends javax.swing.JFrame {
         jDesktopPane1.setLayer(jButton3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel23, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel24, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel25, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(labelCuenta, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jButton4, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(textSearch, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(labelDatos, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jButton5, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(jLabel26, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -148,10 +285,16 @@ public class Ventas extends javax.swing.JFrame {
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField3))
-                    .addComponent(jScrollPane1)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(labelDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(textSearch)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 854, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
@@ -162,20 +305,26 @@ public class Ventas extends javax.swing.JFrame {
                                 .addComponent(jLabel1)))
                         .addGap(116, 116, 116)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel23)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel23))
+                        .addGap(68, 68, 68)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel26))
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 252, Short.MAX_VALUE)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel22)
                             .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jDesktopPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel24)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel25))
+                                    .addComponent(labelCuenta))
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(62, 62, 62))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, 0))
@@ -186,30 +335,35 @@ public class Ventas extends javax.swing.JFrame {
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(113, 113, 113)
+                        .addGap(24, 24, 24)
+                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel24)
-                    .addComponent(jLabel25))
+                    .addComponent(labelCuenta))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel23)
-                            .addComponent(jLabel1))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel26))
                         .addGap(15, 15, 15))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,16 +386,511 @@ public class Ventas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         ProcesarCompraCredito credit = new ProcesarCompraCredito();
         credit.setVisible(true);
+        procesarCompraCredito();
+        
+        
     }//GEN-LAST:event_jButton3ActionPerformed
+    public void borraTabla() {
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.searchTable.getModel();
+        modelo_tabla.setRowCount(0);
+    }
+    private void textSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textSearchKeyPressed
+        // TODO add your handling code here:
 
+
+    }//GEN-LAST:event_textSearchKeyPressed
+    public void procesarCompraCredito() {
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        Object venta[][];
+        if (modelo_tabla_principal.getRowCount() > 0) {
+            venta = obtenerDatosVenta();
+            int referenciaVenta = obtenerReferenciaVenta();
+            referenciaVenta++;
+            Properties datos = new Properties();
+            String servidor;
+            String driver;
+            datos.put("user", "root");
+            datos.put("password", "");
+            servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+            driver = "com.mysql.jdbc.Driver";
+            LocalDate fechaVenta = LocalDate.now();
+            String fecha = (String) fechaVenta.toString();
+            float cuenta = Float.parseFloat(labelCuenta.getText());
+            int user = 1;
+            int idinventario = 1;
+            ids = new int[modelo_tabla_principal.getRowCount()];
+            for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+                int id = obtenerIdVenta();
+                id++;
+                ids[i]=id;
+                String cadenasql = "select idinventario from inventarios where productos_idproducto = '" + venta[i][0] + "'";
+                ResultSet datos_cliente;
+                try {
+                    Class.forName(driver);
+                    Connection con = DriverManager.getConnection(servidor, datos);
+                    if (con != null) {
+
+                        Statement exe = con.createStatement();
+                        datos_cliente = exe.executeQuery(cadenasql);
+                        while (datos_cliente.next()) {
+                            idinventario = datos_cliente.getInt("idinventario");
+
+                        }
+                        con.close();
+
+                    } else {
+                        System.out.println("No conecto");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                cadenasql = "INSERT INTO `ventas`(`idventa`, `totalventa`, `fechaventa`, `tipoventa`, `estatusventa`, `users_idusuario`, `inventarios_idinventario`, `num_venta`, `cantProd`) VALUES ('" + id + "','" + cuenta + "','" + fecha + "','Credito','Pendiente','" + user + "','" + idinventario + "', '" + referenciaVenta + "','" + venta[i][1] + "')";
+                String cadenasql1 = "UPDATE inventarios set cantidadvendida = (SELECT cantidadvendida from inventarios WHERE idinventario =" + idinventario + " )+ " + venta[i][1] + " where idinventario= " + idinventario;
+                String sql1 = "UPDATE productos set existencia = existencia- " + venta[i][1] + "  WHERE idproducto=" + venta[i][0];
+                try {
+                    Class.forName(driver);
+                    Connection con = DriverManager.getConnection(servidor, datos);
+                    if (con != null) {
+                        System.out.println("Conectobusqueda");
+                        Statement exe = con.createStatement();
+                        exe.executeUpdate(cadenasql);
+                        exe.executeUpdate(cadenasql1);
+                        exe.executeUpdate(sql1);
+                        con.close();
+
+                    } else {
+                        System.out.println("No conecto");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+            borraTabla();
+            modelo_tabla_principal.setRowCount(0);
+            
+        } else {
+        }
+    }
+    private void searchTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTableKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchTableKeyPressed
+
+    private void textSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textSearchKeyTyped
+        // TODO add your handling code here:
+        /**
+         * ***************NO
+         * FUNCIONAAAAAA**********************************************
+         */
+        
+    }//GEN-LAST:event_textSearchKeyTyped
+    
+    public void buscar(){
+        borraTabla();
+        String textoBusqueda;
+        /*
+        labelDatos.setText(textSearch.getText());
+        textSearch.repaint();
+        String textoBusqueda = labelDatos.getText();
+        */
+        
+        textoBusqueda= textSearch.getText();
+        String nombre;
+        float precioVenta;
+        int existencia, id;
+        Properties datos = new Properties();
+        String servidor;
+        String driver;
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+        driver = "com.mysql.jdbc.Driver";
+
+        String cadenasql = "SELECT idproducto, nombre, precioventa, existencia from productos where nombre like '" + textoBusqueda + "%'";
+        ResultSet datos_cliente;
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.searchTable.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conectobusqueda");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("idproducto");
+                    nombre = datos_cliente.getString("nombre");
+                    precioVenta = datos_cliente.getFloat("precioventa");
+                    existencia = datos_cliente.getInt("existencia");
+
+                    Object vector[] = {id, nombre, precioVenta, existencia};
+                    modelo_tabla.addRow(vector);
+
+                }
+
+                con.close();
+                
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public float ObtenerCuenta() {
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        float cuenta = 0;
+        for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+            cuenta += (float) modelo_tabla_principal.getValueAt(i, 4);
+        }
+
+        labelCuenta.setText(String.valueOf(cuenta));
+        return cuenta;
+    }
+    private void searchTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchTableMouseClicked
+        // TODO add your handling code here:
+        int renglon, id, cantidad = 1;
+        float precio;
+        String nombre;
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.searchTable.getModel();
+        renglon = searchTable.getSelectedRow();
+        id = (int) modelo_tabla.getValueAt(renglon, 0);
+        nombre = (String) modelo_tabla.getValueAt(renglon, 1);
+        precio = (float) modelo_tabla.getValueAt(renglon, 2);
+        Object vector[] = {id, cantidad, nombre, precio, precio * cantidad};
+        int[] ids;
+
+        if (modelo_tabla_principal.getRowCount() > 0) {
+            for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+                int temp = (int) modelo_tabla_principal.getValueAt(i, 0);
+                if (temp == id) {
+
+                } else {
+                    modelo_tabla_principal.addRow(vector);
+                }
+            }
+        } else {
+            modelo_tabla_principal.addRow(vector);
+        }
+        ObtenerCuenta();
+
+
+    }//GEN-LAST:event_searchTableMouseClicked
+
+    private void tableContentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableContentMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_tableContentMouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        if (modelo_tabla_principal.getRowCount() > 0) {
+            Properties datos = new Properties();
+            String servidor;
+            String driver;
+            datos.put("user", "root");
+            datos.put("password", "");
+            servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+            driver = "com.mysql.jdbc.Driver";
+
+            int renglon, cantidad, id;
+
+            renglon = tableContent.getSelectedRow();
+            id = (int) tableContent.getValueAt(renglon, 0);
+            cantidad = Integer.parseInt(JOptionPane.showInputDialog("Introduce la cantidad"));
+            String cadenasql = "SELECT existencia,precioventa from productos where idproducto ='" + id + "'";
+            ResultSet datos_cliente;
+
+            try {
+                Class.forName(driver);
+                Connection con = DriverManager.getConnection(servidor, datos);
+                if (con != null) {
+
+                    Statement exe = con.createStatement();
+                    datos_cliente = exe.executeQuery(cadenasql);
+                    while (datos_cliente.next()) {
+                        int cantidad1 = datos_cliente.getInt("existencia");
+                        float precio = datos_cliente.getFloat("precioventa");
+                        if (cantidad <= cantidad1) {
+                            modelo_tabla_principal.setValueAt(cantidad, renglon, 1);
+                            JOptionPane.showMessageDialog(tableContent, "Cantidad añadida correctamente");
+                            modelo_tabla_principal.setValueAt(cantidad * precio, renglon, 4);
+                        } else {
+                            JOptionPane.showMessageDialog(tableContent, "Hey, solo tienes " + datos_cliente.getInt("existencia") + " Por favor verifica tu entrada");
+                        }
+                    }
+                    con.close();
+
+                } else {
+                    System.out.println("No conecto");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        ObtenerCuenta();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int renglon;
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        if (modelo_tabla_principal.getRowCount() > 0) {
+            renglon = tableContent.getSelectedRow();
+            modelo_tabla_principal.removeRow(renglon);
+        }
+        ObtenerCuenta();
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+
+        procesarCompra();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void textSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textSearchKeyReleased
+        // TODO add your handling code here:
+        
+        if (evt.getKeyCode()== KeyEvent.VK_ENTER) {
+            borraTabla();
+            buscar();
+        }
+        
+    }//GEN-LAST:event_textSearchKeyReleased
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        PantallaPrincipal v = new PantallaPrincipal();
+        v.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
+    public void procesarCompra() {
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+        Object venta[][];
+        if (modelo_tabla_principal.getRowCount() > 0) {
+            venta = obtenerDatosVenta();
+            int referenciaVenta = obtenerReferenciaVenta();
+            referenciaVenta++;
+            Properties datos = new Properties();
+            String servidor;
+            String driver;
+            datos.put("user", "root");
+            datos.put("password", "");
+            servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+            driver = "com.mysql.jdbc.Driver";
+            LocalDate fechaVenta = LocalDate.now();
+            String fecha = (String) fechaVenta.toString();
+            float cuenta = Float.parseFloat(labelCuenta.getText());
+            int user = 1;
+            int idinventario = 1;
+            for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+                int id = obtenerIdVenta();
+                id++;
+                String cadenasql = "select idinventario from inventarios where productos_idproducto = '" + venta[i][0] + "'";
+                ResultSet datos_cliente;
+                try {
+                    Class.forName(driver);
+                    Connection con = DriverManager.getConnection(servidor, datos);
+                    if (con != null) {
+
+                        Statement exe = con.createStatement();
+                        datos_cliente = exe.executeQuery(cadenasql);
+                        while (datos_cliente.next()) {
+                            idinventario = datos_cliente.getInt("idinventario");
+
+                        }
+                        con.close();
+
+                    } else {
+                        System.out.println("No conecto");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                cadenasql = "INSERT INTO `ventas`(`idventa`, `totalventa`, `fechaventa`, `tipoventa`, `estatusventa`, `users_idusuario`, `inventarios_idinventario`, `num_venta`, `cantProd`) VALUES ('" + id + "','" + cuenta + "','" + fecha + "','Contado','Completada','" + user + "','" + idinventario + "', '" + referenciaVenta + "','" + venta[i][1] + "')";
+                String cadenasql1 = "UPDATE inventarios set cantidadvendida = (SELECT cantidadvendida from inventarios WHERE idinventario =" + idinventario + " )+ " + venta[i][1] + " where idinventario= " + idinventario;
+                String sql1 = "UPDATE productos set existencia = existencia- " + venta[i][1] + "  WHERE idproducto=" + venta[i][0];
+                try {
+                    Class.forName(driver);
+                    Connection con = DriverManager.getConnection(servidor, datos);
+                    if (con != null) {
+                        System.out.println("Conectobusqueda");
+                        Statement exe = con.createStatement();
+                        exe.executeUpdate(cadenasql);
+                        exe.executeUpdate(cadenasql1);
+                        exe.executeUpdate(sql1);
+                        con.close();
+
+                    } else {
+                        System.out.println("No conecto");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+            borraTabla();
+            modelo_tabla_principal.setRowCount(0);
+            JOptionPane.showMessageDialog(tableContent, "COMPRA REALIZADA CORRECTAMENTE");
+        } else {
+        }
+    }
+
+    public Object[][] obtenerDatosVenta() {
+
+        DefaultTableModel modelo_tabla_principal = (DefaultTableModel) this.tableContent.getModel();
+
+        Object venta[][] = new Object[modelo_tabla_principal.getRowCount()][5];
+        for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+            /*
+            int id = (int) modelo_tabla_principal.getValueAt(i, 0);
+            int cantidad = (int) modelo_tabla_principal.getValueAt(i, 1);
+            String nombre = (String) modelo_tabla_principal.getValueAt(i, 2);
+            float precioU = (float) modelo_tabla_principal.getValueAt(i, 3);
+            float precioT = (float) modelo_tabla_principal.getValueAt(i, 4);
+             */
+            venta[i][0] = (int) modelo_tabla_principal.getValueAt(i, 0);
+            venta[i][1] = (int) modelo_tabla_principal.getValueAt(i, 1);
+            venta[i][2] = (String) modelo_tabla_principal.getValueAt(i, 2);
+            venta[i][3] = (float) modelo_tabla_principal.getValueAt(i, 3);
+            venta[i][4] = (float) modelo_tabla_principal.getValueAt(i, 4);
+        }
+
+        for (int i = 0; i < modelo_tabla_principal.getRowCount(); i++) {
+            for (int j = 0; j < 5; j++) {
+                System.out.println(venta[i][j]);
+            }
+        }
+        venta1 = venta;
+        return venta;
+
+    }
+
+    public Object[][] getVenta() {
+        return this.venta1;
+    }
+
+    public int obtenerReferenciaVenta() {
+        Properties datos = new Properties();
+        String servidor;
+        String driver;
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+        driver = "com.mysql.jdbc.Driver";
+        int id = 0;
+        String cadenasql = "SELECT MAX(num_venta) id FROM ventas";
+        ResultSet datos_cliente;
+
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conectobusqueda");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("id");
+
+                }
+
+                con.close();
+
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return id;
+    }
+
+    public int obtenerIdVenta() {
+        Properties datos = new Properties();
+        String servidor;
+        String driver;
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+        driver = "com.mysql.jdbc.Driver";
+        int id = 0;
+        String cadenasql = "SELECT MAX(idventa) id FROM ventas";
+        ResultSet datos_cliente;
+
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conectobusqueda");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("id");
+
+                }
+
+                con.close();
+
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return id;
+    }
+
+    public void datosCompra() {
+        int filas = tableContent.getRowCount();
+        while (filas > 0) {
+            tableContent.getValueAt(filas, 0);
+            filas--;
+        }
+    }
+
+    /*
+    public void agregarProductosTabla() {
+        Properties datos = new Properties();
+        String servidor;
+        String driver;
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+        driver = "com.mysql.jdbc.Driver";
+        String nombreProd;
+        float precioUnit, precioTot;
+        int cantProd;
+        String cadenasql = "SELECT v.idventacredito, (SELECT c.nombre FROM clientes c WHERE v.clientes_idcliente = c.idcliente) nombre, (SELECT c.tel FROM clientes c WHERE v.clientes_idcliente = c.idcliente) tel from ventas_credito v";
+
+        ResultSet datos_cliente;
+
+    }*/
     /**
      * @param args the command line arguments
      */
@@ -282,6 +931,7 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -289,9 +939,14 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelCuenta;
+    private javax.swing.JLabel labelDatos;
+    private javax.swing.JTable searchTable;
+    public javax.swing.JTable tableContent;
+    private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 }

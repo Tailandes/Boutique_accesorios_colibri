@@ -22,7 +22,8 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
      */
     public PantallaPrincipal() {
         initComponents();
-        this.setExtendedState(MAXIMIZED_BOTH);
+        this.setExtendedState(MAXIMIZED_HORIZ);
+        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
         transparentes();
     }
 

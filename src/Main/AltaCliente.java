@@ -157,7 +157,7 @@ public final class AltaCliente extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Id de compra", "Nombre cliente", "Total de compra", "Cantidad pagada", "Cantidad restante"
+                "Id de compra", "Nombre cliente", "Deuda total", "Cantidad pagada", "Cantidad restante"
             }
         ) {
             boolean[] canEdit = new boolean [] {

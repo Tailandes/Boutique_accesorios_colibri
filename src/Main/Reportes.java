@@ -4,6 +4,16 @@
  */
 package Main;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Alexg
@@ -13,9 +23,195 @@ public class Reportes extends javax.swing.JFrame {
     /**
      * Creates new form Reportes
      */
+    Properties datos = new Properties();
+    String servidor;
+    String driver;
+
     public Reportes() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
+        datos.put("user", "root");
+        datos.put("password", "");
+        servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
+        driver = "com.mysql.jdbc.Driver";
+        llenadoTablaInventario();
+
+    }
+    public void llenadoTablaVentas(){
+        int id;
+        String productos,categoria,fecha;
+        float total;
+        
+        String cadenasql="select num_venta,  ";
+        ResultSet datos_cliente;
+
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaInventario.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conecto");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("idproducto");
+                    nombre = datos_cliente.getString("nombre");
+                    fechaRegistro = datos_cliente.getString("fecharegistro");
+                    precioVenta = datos_cliente.getFloat("precioventa");
+                    precioCompra = datos_cliente.getFloat("preciocompra");
+
+                    Object vector[] = {id, nombre, fechaRegistro, precioVenta, precioCompra};
+                    modelo_tabla.addRow(vector);
+                }
+
+                con.close();
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    public void llenadoTablaInventario() {
+        int id;
+        String nombre, fechaRegistro;
+        float precioVenta, precioCompra;
+
+        String cadenasql = "SELECT idproducto,nombre,fecharegistro, precioventa,preciocompra, existencia from productos order by  existencia DESC";
+
+        ResultSet datos_cliente;
+
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaInventario.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conecto");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("idproducto");
+                    nombre = datos_cliente.getString("nombre");
+                    fechaRegistro = datos_cliente.getString("fecharegistro");
+                    precioVenta = datos_cliente.getFloat("precioventa");
+                    precioCompra = datos_cliente.getFloat("preciocompra");
+
+                    Object vector[] = {id, nombre, fechaRegistro, precioVenta, precioCompra};
+                    modelo_tabla.addRow(vector);
+                }
+
+                con.close();
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        totalInvertido();
+    }
+
+    public void totalInvertido() {
+        String lap = (String) lapso.getSelectedItem();
+        String me= (String) mes.getSelectedItem();
+        String cadenasql;
+        if (lap== "Todos") {
+            cadenasql = "SELECT idproducto,nombre,fecharegistro, precioventa,preciocompra, existencia from productos order by  existencia DESC";
+        }else{
+            cadenasql = "SELECT idproducto,nombre,fecharegistro, precioventa,preciocompra, existencia from productos WHERE fecharegistro BETWEEN 20221201 and 20221207  order by  existencia DESCC";
+        }
+        
+        float precioCompra = 0;
+        ResultSet datos_cliente;
+
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaInventario.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conecto");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    precioCompra += datos_cliente.getFloat("preciocompra");
+                }
+                tInver.setText(String.valueOf(precioCompra));
+                con.close();
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    public void InvertidoPiezaMayorsTOCK(){
+         String cadenasql = "SELECT idproducto,nombre,fecharegistro, precioventa,preciocompra, existencia from productos order by  existencia DESC";
+        float precioCompra = 0;
+        ResultSet datos_cliente;
+
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaInventario.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conecto");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    precioCompra += datos_cliente.getFloat("preciocompra");
+                }
+                tInver.setText(String.valueOf(precioCompra));
+                con.close();
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void llenadoTablaVentas() {
+        int id;
+        String producto, categoria, fecha;
+        float total;
+        String cadenasql = "SELECT v.idventa, v.fechaventa,p.nombre, p.categoria from ventas v, productos p, inventarios i WHERE v.inventarios_idinventario= i.idinventario and i.productos_idproducto = p.idproducto and (v.tipoventa = 'Contado' or v.tipoventa ='contado');";
+
+        ResultSet datos_cliente;
+
+        DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaVentas.getModel();
+        try {
+            Class.forName(driver);
+            Connection con = DriverManager.getConnection(servidor, datos);
+            if (con != null) {
+                System.out.println("Conecto");
+                Statement exe = con.createStatement();
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
+                    id = datos_cliente.getInt("v.idventa");
+                    fecha = datos_cliente.getString("v.fechaventa");
+                    producto = datos_cliente.getString("p.nombre");
+                    categoria = datos_cliente.getString("p.categoria");
+                    total = datos_cliente.getFloat("v.totalventa");
+
+                    //Object vector[]={claveProducto, cl_nombre, cl_direccion, cl_RFC, cl_sexo,cl_fechaNacimiento, cl_fechaRegistro, cl_edoCivil, cl_email, cl_enviarCorreo};
+                    //modelo_tabla.addRow(vector);
+                }
+
+                con.close();
+            } else {
+                System.out.println("No conecto");
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -33,7 +229,7 @@ public class Reportes extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         jDesktopPane2 = new javax.swing.JDesktopPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaVentas = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -43,7 +239,7 @@ public class Reportes extends javax.swing.JFrame {
         jToolBar2 = new javax.swing.JToolBar();
         jDesktopPane3 = new javax.swing.JDesktopPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tablaInventario = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -51,7 +247,7 @@ public class Reportes extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
+        tInver = new javax.swing.JLabel();
         jToolBar3 = new javax.swing.JToolBar();
         jDesktopPane4 = new javax.swing.JDesktopPane();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -63,9 +259,9 @@ public class Reportes extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        lapso = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        mes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,33 +275,34 @@ public class Reportes extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaVentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Productos", "fecha", "Total"
+                "ID", "Productos", "categoria", "fecha", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(70);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(450);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(250);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tablaVentas.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+        tablaVentas.getTableHeader().setResizingAllowed(false);
+        tablaVentas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tablaVentas);
+        if (tablaVentas.getColumnModel().getColumnCount() > 0) {
+            tablaVentas.getColumnModel().getColumn(0).setResizable(false);
+            tablaVentas.getColumnModel().getColumn(0).setPreferredWidth(70);
+            tablaVentas.getColumnModel().getColumn(1).setResizable(false);
+            tablaVentas.getColumnModel().getColumn(1).setPreferredWidth(450);
+            tablaVentas.getColumnModel().getColumn(2).setResizable(false);
+            tablaVentas.getColumnModel().getColumn(2).setPreferredWidth(250);
+            tablaVentas.getColumnModel().getColumn(3).setPreferredWidth(150);
         }
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -180,7 +377,10 @@ public class Reportes extends javax.swing.JFrame {
 
         jToolBar2.setRollover(true);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jDesktopPane3.setEnabled(false);
+        jDesktopPane3.setRequestFocusEnabled(false);
+
+        tablaInventario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -196,16 +396,19 @@ public class Reportes extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable2.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
-        jScrollPane2.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setResizable(false);
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(70);
-            jTable2.getColumnModel().getColumn(1).setResizable(false);
-            jTable2.getColumnModel().getColumn(1).setPreferredWidth(400);
-            jTable2.getColumnModel().getColumn(2).setResizable(false);
-            jTable2.getColumnModel().getColumn(3).setResizable(false);
-            jTable2.getColumnModel().getColumn(4).setResizable(false);
+        tablaInventario.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+        tablaInventario.setEnabled(false);
+        tablaInventario.getTableHeader().setResizingAllowed(false);
+        tablaInventario.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tablaInventario);
+        if (tablaInventario.getColumnModel().getColumnCount() > 0) {
+            tablaInventario.getColumnModel().getColumn(0).setResizable(false);
+            tablaInventario.getColumnModel().getColumn(0).setPreferredWidth(70);
+            tablaInventario.getColumnModel().getColumn(1).setResizable(false);
+            tablaInventario.getColumnModel().getColumn(1).setPreferredWidth(400);
+            tablaInventario.getColumnModel().getColumn(2).setResizable(false);
+            tablaInventario.getColumnModel().getColumn(3).setResizable(false);
+            tablaInventario.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -224,7 +427,7 @@ public class Reportes extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel15.setText("Total Invertido:");
 
-        jLabel16.setText("0.0");
+        tInver.setText("0.0");
 
         jDesktopPane3.setLayer(jScrollPane2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane3.setLayer(jLabel11, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -234,7 +437,7 @@ public class Reportes extends javax.swing.JFrame {
         jDesktopPane3.setLayer(jLabel17, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane3.setLayer(jLabel18, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane3.setLayer(jLabel15, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane3.setLayer(jLabel16, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane3.setLayer(tInver, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane3Layout = new javax.swing.GroupLayout(jDesktopPane3);
         jDesktopPane3.setLayout(jDesktopPane3Layout);
@@ -259,7 +462,7 @@ public class Reportes extends javax.swing.JFrame {
                         .addGap(206, 206, 206)
                         .addComponent(jLabel15)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tInver, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(75, 75, 75))))
             .addComponent(jScrollPane2)
         );
@@ -275,7 +478,7 @@ public class Reportes extends javax.swing.JFrame {
                         .addComponent(jLabel17)
                         .addComponent(jLabel18)
                         .addComponent(jLabel15)
-                        .addComponent(jLabel16)))
+                        .addComponent(tInver)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDesktopPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -305,6 +508,8 @@ public class Reportes extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable3.getTableHeader().setResizingAllowed(false);
+        jTable3.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTable3);
         if (jTable3.getColumnModel().getColumnCount() > 0) {
             jTable3.getColumnModel().getColumn(0).setResizable(false);
@@ -373,20 +578,20 @@ public class Reportes extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Por lapso");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses", "7 meses", "8 meses", "9 meses", "10 meses", "11 meses", "1 año", "2 años", "3 años", "5 años" }));
+        lapso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "1 mes", "2 meses", "3 meses", "4 meses", "5 meses", "6 meses", "7 meses", "8 meses", "9 meses", "10 meses", "11 meses", "1 año", "2 años", "3 años", "5 años" }));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setText("Por mes:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        mes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
 
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jTabbedPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jComboBox1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lapso, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jComboBox2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(mes, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -403,11 +608,11 @@ public class Reportes extends javax.swing.JFrame {
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lapso, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(mes, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -424,8 +629,8 @@ public class Reportes extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(mes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lapso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(50, Short.MAX_VALUE))
@@ -481,8 +686,6 @@ public class Reportes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JDesktopPane jDesktopPane2;
     private javax.swing.JDesktopPane jDesktopPane3;
@@ -494,7 +697,6 @@ public class Reportes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
@@ -514,11 +716,14 @@ public class Reportes extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
+    private javax.swing.JComboBox<String> lapso;
+    private javax.swing.JComboBox<String> mes;
+    private javax.swing.JLabel tInver;
+    private javax.swing.JTable tablaInventario;
+    private javax.swing.JTable tablaVentas;
     // End of variables declaration//GEN-END:variables
 }
