@@ -24,24 +24,25 @@ import javax.swing.table.DefaultTableModel;
  * @author Alexg
  */
 public class ProcesarCompraCredito extends javax.swing.JFrame {
+
     Ventas infoVenta = new Ventas();
     Properties datos = new Properties();
-            String servidor;
-            String driver;
-    boolean bandera =  false;
-            
+    String servidor;
+    String driver;
+    boolean bandera = false;
+
     /**
      * Creates new form ProcesarCompraCredito
      */
     public ProcesarCompraCredito() {
         initComponents();
         llenarTabla();
-         datos.put("user", "root");
+        datos.put("user", "root");
         datos.put("password", "");
         servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
         driver = "com.mysql.jdbc.Driver";
-        
-        
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     }
 
     /**
@@ -98,12 +99,16 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablaClientes.setShowHorizontalLines(true);
+        tablaClientes.getTableHeader().setResizingAllowed(false);
+        tablaClientes.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tablaClientes);
         if (tablaClientes.getColumnModel().getColumnCount() > 0) {
             tablaClientes.getColumnModel().getColumn(0).setResizable(false);
             tablaClientes.getColumnModel().getColumn(0).setPreferredWidth(70);
             tablaClientes.getColumnModel().getColumn(1).setResizable(false);
             tablaClientes.getColumnModel().getColumn(1).setPreferredWidth(400);
+            tablaClientes.getColumnModel().getColumn(2).setResizable(false);
             tablaClientes.getColumnModel().getColumn(2).setPreferredWidth(350);
         }
 
@@ -161,7 +166,7 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -186,7 +191,7 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(textPago1)
                             .addComponent(textTel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))))
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,32 +201,32 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addComponent(textClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(textNameClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(textTel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addComponent(textPago1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(procesarCompra)
+                                    .addComponent(jButton2))
+                                .addGap(21, 21, 21))))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37)))
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(textNameClient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(textTel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addComponent(textPago1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(procesarCompra)
-                            .addComponent(jButton2))
-                        .addGap(21, 21, 21))))
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -244,23 +249,22 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
 
     private void procesarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_procesarCompraActionPerformed
         // TODO add your handling code here:
-       
-        String nombre= textNameClient.getText(),tel= textTel.getText();
-        float pago =0;
-        pago= Float.parseFloat(textPago1.getText());
+
+        String nombre = textNameClient.getText(), tel = textTel.getText();
+        float pago = 0;
+        pago = Float.parseFloat(textPago1.getText());
         //infoVenta.obtenerDatosVenta();
         //Object info [][] =infoVenta.getVenta();
-        
-        
+
         LocalDate fechaVenta = LocalDate.now();
         String fecha = (String) fechaVenta.toString();
-       int idinventario=1;
-        int user=1;
+        int idinventario = 1;
+        int user = 1;
         Ventas objeto = new Ventas();
-        if (!nombre.equals("") && !tel.equals("") && pago !=0) {
+        if (!nombre.equals("") && !tel.equals("")) {
             int idVentaC = obtenerIdVenta();
             idVentaC++;
-            
+
             /*
             for (int i = 0; i < info.length; i++) {
              
@@ -316,31 +320,67 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
                 }
             }*/
             //String cadenasql = "SELECT MAX(idabonos) id FROM abonos";
-            String credito ="INSERT INTO `abonos`(`idabono`, `cantidad_abono`) VALUES ("+getid("SELECT MAX(idabono) id FROM abonos")+","+pago+")";
-            String cliente = "INSERT INTO `clientes`(`idcliente`, `tel`, `nombre`, `deudatotal`) VALUES ("+getid("SELECT MAX(idcliente)id from clientes")+","+tel+",'"+nombre+"',0)";
-            String venta_credito ="INSERT INTO `ventas_credito`(`idventacredito`, `clientes_idcliente`, `ventas_idventa`, `abonos_idabono`, `deudarestante`) VALUES ("+idVentaC+","+getid("SELECT MAX(idcliente)id from clientes")+","+getid("select (MAX(idventa)-1)id from ventas")+","+getid("SELECT MAX(idabono)id  FROM abonos")+",0)";
-            String sql = ("UPDATE `ventas` SET `estatusventa`='En proceso' WHERE num_venta = (SELECT num_venta from ventas WHERE (SELECT MAX(idventa) FROM ventas) = idventa)");
-             try {
-                    Class.forName(driver);
-                    Connection con = DriverManager.getConnection(servidor, datos);
-                    if (con != null) {
-                        System.out.println("conecto credito");
-                        Statement exe = con.createStatement();
-                        exe.executeUpdate(credito);
-                        exe.executeUpdate(cliente);
-                        exe.executeUpdate(venta_credito);
-                        exe.executeUpdate(sql);
-                        con.close();
-                        objeto.bandera=false;
-                    } else {
-                        System.out.println("No conecto");
+            /**
+             * ********************************
+             */
+            int idc = 0;
+            boolean bandera = false;
+            String existencia = "SELECT c.idcliente FROM clientes c WHERE c.nombre = '" + textNameClient.getText().toLowerCase() + "' and c.tel='" + textTel.getText()+"'";
+            ResultSet datos_cliente;
+            try {
+                Class.forName(driver);
+                Connection con = DriverManager.getConnection(servidor, datos);
+                if (con != null) {
+                    System.out.println("conecto credito");
+                    Statement exe = con.createStatement();
+                    datos_cliente = exe.executeQuery(existencia);
+                    while (datos_cliente.next()) {
+                        idc = datos_cliente.getInt("c.idcliente");
+                        bandera = true;
                     }
-                } catch (SQLException ex) {
-                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+                } else {
+                    System.out.println("No conecto");
                 }
+            } catch (SQLException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String cliente , venta_credito , modDeudaTotal ;
+
             
+            cliente = "INSERT INTO `clientes`(`idcliente`, `tel`, `nombre`, `deudatotal`) VALUES (" + getid("SELECT MAX(idcliente)id from clientes") + "," + tel + ",'" + nombre + "',0)";
+           
+            //modDeudaTotal = "UPDATE `clientes` SET `deudatotal`=(deudatotal + (SELECT totalventa from ventas WHERE idventa = " + getid("SELECT MAX(idventa)id from ventas") + ") )WHERE (SELECT MAX(idventa)id from ventas) and idcliente = " + idc;
+            venta_credito = "INSERT INTO `ventas_credito`(`idventacredito`, `clientes_idcliente`, `ventas_idventa`, `abonos_idabono`, `deudarestante`) VALUES (" + idVentaC + "," + idc + "," + getid("select (MAX(idventa)-1)id from ventas") + "," + getid("SELECT MAX(idabono)id  FROM abonos") + ",0)";
+
+            String credito = "INSERT INTO `abonos`(`idabono`, `cantidad_abono`) VALUES (" + getid("SELECT MAX(idabono) id FROM abonos") + "," + pago + ")";
+
+            String sql = ("UPDATE `ventas` SET `estatusventa`='En proceso' WHERE num_venta = (SELECT num_venta from ventas WHERE (SELECT MAX(idventa) FROM ventas) = idventa)");
+            try {
+                Class.forName(driver);
+                Connection con = DriverManager.getConnection(servidor, datos);
+                if (con != null) {
+                    System.out.println("conecto credito");
+                    Statement exe = con.createStatement();
+                    exe.executeUpdate(credito);
+                    if (!bandera) {
+                        exe.executeUpdate(cliente);
+                    }
+                   // exe.executeUpdate(modDeudaTotal);
+                    exe.executeUpdate(venta_credito);
+                    exe.executeUpdate(sql);
+                    con.close();
+                    objeto.bandera = false;
+                } else {
+                    System.out.println("No conecto");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
         textNameClient.setText("");
         textPago1.setText("");
@@ -350,8 +390,12 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(rootPane, "La compra a credito ha sido exitosa");
     }//GEN-LAST:event_procesarCompraActionPerformed
 
-    
-    public int getid(String sql){
+    public boolean verificarExistenciaCliente() {
+
+        return true;
+    }
+
+    public int getid(String sql) {
         int id = 0;
         String cadenasql = sql;
         ResultSet datos_cliente;
@@ -387,17 +431,17 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
 
     private void textClientesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textClientesKeyReleased
         // TODO add your handling code here:
-         
-        if (evt.getKeyCode()== KeyEvent.VK_ENTER) {
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             borraTabla();
             buscar();
         }
     }//GEN-LAST:event_textClientesKeyReleased
-    
-    public void buscar(){
+
+    public void buscar() {
         //borraTabla(); 
         String textoBusqueda = textClientes.getText();
-        String nombre,tel;
+        String nombre, tel;
         int id;
         Properties datos = new Properties();
         String servidor;
@@ -427,7 +471,7 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
                 }
 
                 con.close();
-                
+
             } else {
                 System.out.println("No conecto");
             }
@@ -437,8 +481,9 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
             Logger.getLogger(Ventas.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public int obtenerIdVenta() {
-        
+
         int id = 0;
         String cadenasql = "SELECT MAX(idventacredito) id FROM ventas_credito";
         ResultSet datos_cliente;
@@ -467,6 +512,7 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
         }
         return id;
     }
+
     /**
      * @param args the command line arguments
      */
@@ -501,38 +547,39 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
             }
         });
     }
-   public void llenarTabla(){
-       Properties datos = new Properties();
+
+    public void llenarTabla() {
+        Properties datos = new Properties();
         String servidor;
         String driver;
         datos.put("user", "root");
         datos.put("password", "");
         servidor = "jdbc:mysql://127.0.0.1/boutique_accesorios_colibri";
         driver = "com.mysql.jdbc.Driver";
-        String nombre,tel;
+        String nombre, tel;
         int idventacredito;
-        String cadenasql="SELECT v.idventacredito, (SELECT c.nombre FROM clientes c WHERE v.clientes_idcliente = c.idcliente) nombre, (SELECT c.tel FROM clientes c WHERE v.clientes_idcliente = c.idcliente) tel from ventas_credito v";
-        
+        String cadenasql = "SELECT v.idventacredito, (SELECT c.nombre FROM clientes c WHERE v.clientes_idcliente = c.idcliente) nombre, (SELECT c.tel FROM clientes c WHERE v.clientes_idcliente = c.idcliente) tel from ventas_credito v";
+
         ResultSet datos_cliente;
-        
+
         DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaClientes.getModel();
-        
+
         try {
             Class.forName(driver);
             Connection con = DriverManager.getConnection(servidor, datos);
             if (con != null) {
                 System.out.println("Conecto");
                 Statement exe = con.createStatement();
-                datos_cliente= exe.executeQuery(cadenasql);
-                while (datos_cliente.next()){
+                datos_cliente = exe.executeQuery(cadenasql);
+                while (datos_cliente.next()) {
                     idventacredito = datos_cliente.getInt("idventacredito");
                     nombre = datos_cliente.getString("nombre");
                     tel = datos_cliente.getString("tel");
-                    
-                    Object vector[]={idventacredito,nombre,tel};
+
+                    Object vector[] = {idventacredito, nombre, tel};
                     modelo_tabla.addRow(vector);
-                }   
-                
+                }
+
                 con.close();
             } else {
                 System.out.println("No conecto");
@@ -541,9 +588,9 @@ public class ProcesarCompraCredito extends javax.swing.JFrame {
 
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
-   }
-   
-   public void borraTabla(){
+    }
+
+    public void borraTabla() {
         DefaultTableModel modelo_tabla = (DefaultTableModel) this.tablaClientes.getModel();
         modelo_tabla.setRowCount(0);
     }

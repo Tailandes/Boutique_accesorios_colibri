@@ -388,9 +388,10 @@ public class Ventas extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        procesarCompraCredito();
         ProcesarCompraCredito credit = new ProcesarCompraCredito();
         credit.setVisible(true);
-        procesarCompraCredito();
+        
         
         
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -943,7 +944,7 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel labelCuenta;
+    public javax.swing.JLabel labelCuenta;
     private javax.swing.JLabel labelDatos;
     private javax.swing.JTable searchTable;
     public javax.swing.JTable tableContent;
